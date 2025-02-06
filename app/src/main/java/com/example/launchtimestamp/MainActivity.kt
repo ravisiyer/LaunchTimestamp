@@ -1,11 +1,14 @@
 package com.example.launchtimestamp
 
+import android.app.Activity.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,14 +23,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 5
-//        val RESIZE_TIMESTAMP_ENTRIES = 2
         val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
         val currentDatetime = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-//        var msg = "\n Current Launch Timestamp:\n $currentDatetime"
-        var msg = "\n Current Launch Timestamp: $currentDatetime"
+//        var msg = "\n Current Launch Timestamp: $currentDatetime"
+        var msg = "\n\n Current Launch Timestamp: $currentDatetime"
         msg += "\n\n Timestamp format:(yyyy/MM/dd hh:mm:ss)"
         if (setPrevDatetime != null) {
             msg += "\n\n Previous Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
@@ -54,13 +56,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             LaunchTimestampTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    innerPadding ->
+                        innerPadding ->
+//                    ShowText(
+//                        message = "\n\n",
+//                        modifier = Modifier.padding(innerPadding))
+//                    FilledButtonExample(onClick = { Log.d("Filled button", "Filled button clicked.") })
+                    FilledButtonExample(onClick = { clearAllTimestamps() })
                     ShowText(
                         message = msg,
                         modifier = Modifier.padding(innerPadding))
                 }
             }
         }
+    }
+    fun clearAllTimestamps() {
+        val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        var setDatetimeM = LinkedHashSet<String>()
+        val myEdit = sh.edit()
+        myEdit.putStringSet("savedDatetime", setDatetimeM)
+        myEdit.apply()
     }
 }
 
@@ -70,4 +84,14 @@ fun ShowText(message: String, modifier: Modifier = Modifier) {
     Text(
         text = message,
     )
+}
+
+@Composable
+fun FilledButtonExample(onClick: () -> Unit) {
+    Text(
+        text = "\n\n",
+    )
+    Button(onClick = { onClick() }) {
+        Text("Clear Launch Timestamps")
+    }
 }
