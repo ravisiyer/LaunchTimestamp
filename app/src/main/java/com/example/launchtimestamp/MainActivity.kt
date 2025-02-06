@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 3
         val RESIZE_TIMESTAMP_ENTRIES = 2
-//        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
         val currentDate = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
@@ -41,22 +40,19 @@ class MainActivity : ComponentActivity() {
         setDatetimeM.add(currentDate)
         if (setPrevDatetime != null) {
             if (setPrevDatetime.size > MAX_TIMESTAMP_ENTRIES ) {
-                // Truncate set (inefficient as for loop does not break out; will do that next
-                // after exploring drop)
                 println("Truncating")
-                for(indexedValue in setPrevDatetime.withIndex())
-                    if (indexedValue.index < RESIZE_TIMESTAMP_ENTRIES) {
-                        setDatetimeM.add(indexedValue.value)
-                    }
+                setDatetimeM.addAll(setPrevDatetime.dropLast(setPrevDatetime.size - RESIZE_TIMESTAMP_ENTRIES))
+//                for(indexedValue in setPrevDatetime.dropLast(setPrevDatetime.size - RESIZE_TIMESTAMP_ENTRIES).withIndex())
+//                    if (indexedValue.index < RESIZE_TIMESTAMP_ENTRIES) {
+//                        setDatetimeM.add(indexedValue.value)
+//                    }
             } else {
                 println("Not truncating")
-//                setDatetimeM = LinkedHashSet(setPrevDatetime)
                 setDatetimeM.addAll(setPrevDatetime)
             }
             // We can ignore setPrevDateTime if it is null
             // Only entry in setDatetimeM will be currentDate which is OK.
         }
-//        val setDatetimeM = setPrevDatetime?.let { LinkedHashSet<String>(it) }
 
         val myEdit = sh.edit()
         myEdit.putStringSet("savedDatetime", setDatetimeM)
