@@ -1,6 +1,8 @@
 package com.example.launchtimestamp
 
 //import android.content.Context
+//import androidx.compose.ui.tooling.preview.Preview
+//import androidx.compose.ui.unit.sp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,11 +13,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.sp
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
 import java.util.Date
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,12 +25,18 @@ class MainActivity : ComponentActivity() {
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
-        val prevDatetime = sh.getString("savedDatetime", "")
+        val setPrevDatetime =  sh.getStringSet("savedDatetime", hashSetOf<String>())
+        var msg = "\n Current Launch:   $currentDate"
+        if (setPrevDatetime != null) {
+            msg += "\n Previous Launches:"
+            for(item in setPrevDatetime)
+                msg += "\n $item"
+        }
+        val setDatetimeM = setPrevDatetime?.let { HashSet<String>(it) }
+        setDatetimeM?.add(currentDate)
         val myEdit = sh.edit()
-        myEdit.putString("savedDatetime", currentDate.toString())
+        myEdit.putStringSet("savedDatetime", setDatetimeM)
         myEdit.apply()
-//        val msg = "\nCurrent Launch:\n $currentDate\n Prev. Launch:\n $prevDatetime\n"
-        val msg = "\n Current Launch:   $currentDate\n Previous Launch: $prevDatetime\n"
         setContent {
             LaunchTimestampTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -49,12 +56,4 @@ fun ShowText(message: String, modifier: Modifier = Modifier) {
     Text(
         text = message,
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LaunchTimestampPreview() {
-    LaunchTimestampTheme {
-        ShowText(message = "Test")
-    }
 }
