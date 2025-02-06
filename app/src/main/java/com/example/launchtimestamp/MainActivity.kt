@@ -19,26 +19,27 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val MAX_TIMESTAMP_ENTRIES = 3
-        val RESIZE_TIMESTAMP_ENTRIES = 2
+        val MAX_TIMESTAMP_ENTRIES = 5
+//        val RESIZE_TIMESTAMP_ENTRIES = 2
         val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
         val currentDatetime = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "\n Current Launch Timestamp:\n $currentDatetime"
-        msg += "\n Timestamp format:(yyyy/MM/dd hh:mm:ss)"
+//        var msg = "\n Current Launch Timestamp:\n $currentDatetime"
+        var msg = "\n Current Launch Timestamp: $currentDatetime"
+        msg += "\n\n Timestamp format:(yyyy/MM/dd hh:mm:ss)"
         if (setPrevDatetime != null) {
-            msg += "\n Previous Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES):"
-            for(item in setPrevDatetime)
-                msg += "\n $item"
+            msg += "\n\n Previous Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
+            for(item in setPrevDatetime.withIndex())
+                msg += "\n ${item.index+1}) ${item.value}"
         }
         var setDatetimeM = LinkedHashSet<String>()
         setDatetimeM.add(currentDatetime)
         if (setPrevDatetime != null) {
             if (setPrevDatetime.size > MAX_TIMESTAMP_ENTRIES - 1) {
                 println("Truncating")
-                setDatetimeM.addAll(setPrevDatetime.dropLast(setPrevDatetime.size - RESIZE_TIMESTAMP_ENTRIES))
+                setDatetimeM.addAll(setPrevDatetime.dropLast(setPrevDatetime.size - (MAX_TIMESTAMP_ENTRIES - 1)))
             } else {
 //                println("Not truncating")
                 setDatetimeM.addAll(setPrevDatetime)
