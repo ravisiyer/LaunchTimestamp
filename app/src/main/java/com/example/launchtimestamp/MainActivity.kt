@@ -13,17 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = sdf.format(Date())
         setContent {
             LaunchTimestampTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                     innerPadding ->
                     ShowText(
-                        message = "Android",
+                        message = currentDate,
                         modifier = Modifier.padding(innerPadding))
                 }
             }
