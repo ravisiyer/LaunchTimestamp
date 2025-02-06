@@ -22,18 +22,42 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val MAX_TIMESTAMP_ENTRIES = 3
+        val RESIZE_TIMESTAMP_ENTRIES = 2
+//        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
         val currentDate = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
-        val setPrevDatetime =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
-        var msg = "\n Current Launch:   $currentDate"
+        val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
+        val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
+        var msg = "\n Current Launch (yyyy/MM/dd hh:mm:ss):\n $currentDate"
         if (setPrevDatetime != null) {
             msg += "\n Previous Launches:"
             for(item in setPrevDatetime)
                 msg += "\n $item"
         }
-        val setDatetimeM = setPrevDatetime?.let { LinkedHashSet<String>(it) }
-        setDatetimeM?.add(currentDate)
+
+        var setDatetimeM = LinkedHashSet<String>()
+        setDatetimeM.add(currentDate)
+        if (setPrevDatetime != null) {
+            if (setPrevDatetime.size > MAX_TIMESTAMP_ENTRIES ) {
+                // Truncate set (inefficient as for loop does not break out; will do that next
+                // after exploring drop)
+                println("Truncating")
+                for(indexedValue in setPrevDatetime.withIndex())
+                    if (indexedValue.index < RESIZE_TIMESTAMP_ENTRIES) {
+                        setDatetimeM.add(indexedValue.value)
+                    }
+            } else {
+                println("Not truncating")
+//                setDatetimeM = LinkedHashSet(setPrevDatetime)
+                setDatetimeM.addAll(setPrevDatetime)
+            }
+            // We can ignore setPrevDateTime if it is null
+            // Only entry in setDatetimeM will be currentDate which is OK.
+        }
+//        val setDatetimeM = setPrevDatetime?.let { LinkedHashSet<String>(it) }
+
         val myEdit = sh.edit()
         myEdit.putStringSet("savedDatetime", setDatetimeM)
         myEdit.apply()
