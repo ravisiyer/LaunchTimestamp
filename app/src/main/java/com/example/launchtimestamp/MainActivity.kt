@@ -1,8 +1,5 @@
 package com.example.launchtimestamp
 
-//import android.content.Context
-//import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.sp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,33 +22,29 @@ class MainActivity : ComponentActivity() {
         val MAX_TIMESTAMP_ENTRIES = 3
         val RESIZE_TIMESTAMP_ENTRIES = 2
         val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
-        val currentDate = sdf.format(Date())
+        val currentDatetime = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "\n Current Launch (yyyy/MM/dd hh:mm:ss):\n $currentDate"
+        var msg = "\n Current Launch Timestamp:\n $currentDatetime"
+        msg += "\n Timestamp format:(yyyy/MM/dd hh:mm:ss)"
         if (setPrevDatetime != null) {
-            msg += "\n Previous Launches:"
+            msg += "\n Previous Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES):"
             for(item in setPrevDatetime)
                 msg += "\n $item"
         }
-
         var setDatetimeM = LinkedHashSet<String>()
-        setDatetimeM.add(currentDate)
+        setDatetimeM.add(currentDatetime)
         if (setPrevDatetime != null) {
-            if (setPrevDatetime.size > MAX_TIMESTAMP_ENTRIES ) {
+            if (setPrevDatetime.size > MAX_TIMESTAMP_ENTRIES - 1) {
                 println("Truncating")
                 setDatetimeM.addAll(setPrevDatetime.dropLast(setPrevDatetime.size - RESIZE_TIMESTAMP_ENTRIES))
-//                for(indexedValue in setPrevDatetime.dropLast(setPrevDatetime.size - RESIZE_TIMESTAMP_ENTRIES).withIndex())
-//                    if (indexedValue.index < RESIZE_TIMESTAMP_ENTRIES) {
-//                        setDatetimeM.add(indexedValue.value)
-//                    }
             } else {
-                println("Not truncating")
+//                println("Not truncating")
                 setDatetimeM.addAll(setPrevDatetime)
             }
             // We can ignore setPrevDateTime if it is null
-            // Only entry in setDatetimeM will be currentDate which is OK.
+            // Only entry in setDatetimeM will be currentDatetime which is OK.
         }
 
         val myEdit = sh.edit()
