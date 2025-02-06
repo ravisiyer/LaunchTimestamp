@@ -25,14 +25,14 @@ class MainActivity : ComponentActivity() {
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
-        val setPrevDatetime =  sh.getStringSet("savedDatetime", hashSetOf<String>())
+        val setPrevDatetime =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         var msg = "\n Current Launch:   $currentDate"
         if (setPrevDatetime != null) {
             msg += "\n Previous Launches:"
             for(item in setPrevDatetime)
                 msg += "\n $item"
         }
-        val setDatetimeM = setPrevDatetime?.let { HashSet<String>(it) }
+        val setDatetimeM = setPrevDatetime?.let { LinkedHashSet<String>(it) }
         setDatetimeM?.add(currentDate)
         val myEdit = sh.edit()
         myEdit.putStringSet("savedDatetime", setDatetimeM)
