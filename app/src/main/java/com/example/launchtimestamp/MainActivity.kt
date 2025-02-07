@@ -1,8 +1,7 @@
 package com.example.launchtimestamp
 
-import android.app.Activity.MODE_PRIVATE
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,16 +18,16 @@ import java.util.Date
 
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnsafeIntentLaunch")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val MAX_TIMESTAMP_ENTRIES = 5
+        val MAX_TIMESTAMP_ENTRIES = 100
         val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
         val currentDatetime = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-//        var msg = "\n Current Launch Timestamp: $currentDatetime"
         var msg = "\n\n Current Launch Timestamp: $currentDatetime"
         msg += "\n\n Timestamp format:(yyyy/MM/dd hh:mm:ss)"
         if (setPrevDatetime != null) {
@@ -43,7 +42,6 @@ class MainActivity : ComponentActivity() {
                 println("Truncating")
                 setDatetimeM.addAll(setPrevDatetime.dropLast(setPrevDatetime.size - (MAX_TIMESTAMP_ENTRIES - 1)))
             } else {
-//                println("Not truncating")
                 setDatetimeM.addAll(setPrevDatetime)
             }
             // We can ignore setPrevDateTime if it is null
@@ -57,11 +55,16 @@ class MainActivity : ComponentActivity() {
             LaunchTimestampTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                         innerPadding ->
-//                    ShowText(
-//                        message = "\n\n",
-//                        modifier = Modifier.padding(innerPadding))
-//                    FilledButtonExample(onClick = { Log.d("Filled button", "Filled button clicked.") })
-                    FilledButtonExample(onClick = { clearAllTimestamps() })
+                    ShowText(
+                        message = "\n\n",
+                        modifier = Modifier.padding(innerPadding))
+                    FilledButtonExample(onClick = {
+                        clearAllTimestamps();
+                        // Below code seems to work but don't know if it is the right way
+                        // to redraw (main) screen
+                        // Also had to suppress warning about "UnsafeIntentLaunch"
+                        finish();
+                        startActivity(getIntent()); })
                     ShowText(
                         message = msg,
                         modifier = Modifier.padding(innerPadding))
@@ -80,7 +83,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShowText(message: String, modifier: Modifier = Modifier) {
-//fun ShowText(message: String) {
     Text(
         text = message,
     )
@@ -88,9 +90,9 @@ fun ShowText(message: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun FilledButtonExample(onClick: () -> Unit) {
-    Text(
-        text = "\n\n",
-    )
+//    Text(
+//        text = "\n\n",
+//    )
     Button(onClick = { onClick() }) {
         Text("Clear Launch Timestamps")
     }
