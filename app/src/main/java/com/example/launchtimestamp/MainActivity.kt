@@ -1,6 +1,5 @@
 package com.example.launchtimestamp
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +17,6 @@ import java.util.Date
 
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnsafeIntentLaunch")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -59,12 +57,9 @@ class MainActivity : ComponentActivity() {
                         message = "\n\n",
                         modifier = Modifier.padding(innerPadding))
                     FilledButtonExample(onClick = {
-                        clearAllTimestamps();
-                        // Below code seems to work but don't know if it is the right way
-                        // to redraw (main) screen
-                        // Also had to suppress warning about "UnsafeIntentLaunch"
-                        finish();
-                        startActivity(getIntent()); })
+                        clearAllTimestamps()
+                        this.recreate()
+                    })
                     ShowText(
                         message = msg,
                         modifier = Modifier.padding(innerPadding))
@@ -72,7 +67,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    fun clearAllTimestamps() {
+    private fun clearAllTimestamps() {
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         var setDatetimeM = LinkedHashSet<String>()
         val myEdit = sh.edit()
