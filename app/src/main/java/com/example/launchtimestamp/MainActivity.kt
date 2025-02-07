@@ -15,7 +15,6 @@ import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +51,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             LaunchTimestampTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                        innerPadding ->
-                    ShowText(
-                        message = "\n\n",
-                        modifier = Modifier.padding(innerPadding))
+                    innerPadding ->
                     FilledButtonExample(onClick = {
                         clearAllTimestamps()
                         this.recreate()
-                    })
+                        },
+                        modifier = Modifier.padding(innerPadding))
                     ShowText(
                         message = msg,
                         modifier = Modifier.padding(innerPadding))
@@ -80,15 +77,15 @@ class MainActivity : ComponentActivity() {
 fun ShowText(message: String, modifier: Modifier = Modifier) {
     Text(
         text = message,
+        modifier = modifier.padding()
     )
 }
 
 @Composable
-fun FilledButtonExample(onClick: () -> Unit) {
-//    Text(
-//        text = "\n\n",
-//    )
-    Button(onClick = { onClick() }) {
+fun FilledButtonExample(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(onClick = { onClick() },
+        modifier = modifier.padding()
+    ) {
         Text("Clear Launch Timestamps")
     }
 }
