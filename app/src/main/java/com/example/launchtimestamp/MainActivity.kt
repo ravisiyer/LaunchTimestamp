@@ -19,7 +19,7 @@ import java.util.Date
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
+        enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 100
         val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         val currentDatetime = sdf.format(Date())
