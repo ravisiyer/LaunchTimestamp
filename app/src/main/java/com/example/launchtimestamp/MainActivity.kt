@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -18,19 +19,19 @@ import java.util.Date
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 100
         val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         val currentDatetime = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "\n\n Current Launch Timestamp:\n $currentDatetime"
-        msg += "\n\n Timestamp format: yyyy/MM/dd HH:mm:ss"
+        var msg = "\n\nCurrent Launch Timestamp:\n$currentDatetime"
+        msg += "\n\nTimestamp format: yyyy/MM/dd HH:mm:ss"
         if (setPrevDatetime != null) {
-            msg += "\n\n Previous Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
+            msg += "\n\nPrevious Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
             for(item in setPrevDatetime.withIndex())
-                msg += "\n ${item.index+1}) ${item.value}"
+                msg += "\n${item.index+1}) ${item.value}"
         }
         var setDatetimeM = LinkedHashSet<String>()
         setDatetimeM.add(currentDatetime)
@@ -77,14 +78,14 @@ class MainActivity : ComponentActivity() {
 fun ShowText(message: String, modifier: Modifier = Modifier) {
     Text(
         text = message,
-        modifier = modifier.padding()
+        modifier = modifier.padding(8.dp)
     )
 }
 
 @Composable
 fun FilledButtonExample(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Button(onClick = { onClick() },
-        modifier = modifier.padding()
+        modifier = modifier.padding(8.dp)
     ) {
         Text("Clear Launch Timestamps")
     }
