@@ -20,13 +20,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 100
-        val sdf = SimpleDateFormat("yyyy/MM/dd hh:mm:ss")
+        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         val currentDatetime = sdf.format(Date())
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "\n\n Current Launch Timestamp: $currentDatetime"
-        msg += "\n\n Timestamp format:(yyyy/MM/dd hh:mm:ss)"
+        var msg = "\n\n Current Launch Timestamp:\n $currentDatetime"
+        msg += "\n\n Timestamp format: yyyy/MM/dd HH:mm:ss"
         if (setPrevDatetime != null) {
             msg += "\n\n Previous Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
             for(item in setPrevDatetime.withIndex())
