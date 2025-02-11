@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,10 +29,11 @@ class MainActivity : ComponentActivity() {
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "\n\nCurrent Launch Timestamp:\n$currentDatetime"
+        var msg = "\n\nCurrent Launch/Redraw Timestamp:\n$currentDatetime"
         msg += "\n\nTimestamp format: yyyy/MM/dd HH:mm:ss"
+        msg += "\nTo add new (redraw) timestamp, switch between portrait and landscape modes."
         if (setPrevDatetime != null) {
-            msg += "\n\nPrevious Launch Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
+            msg += "\n\nPrevious Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
             for(item in setPrevDatetime.withIndex())
                 msg += "\n${item.index+1}) ${item.value}"
         }
@@ -78,15 +82,22 @@ class MainActivity : ComponentActivity() {
 fun ShowText(message: String, modifier: Modifier = Modifier) {
     Text(
         text = message,
-        modifier = modifier.padding(8.dp)
+        modifier = modifier
+            .safeDrawingPadding()
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
     )
 }
 
 @Composable
 fun FilledButtonExample(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Button(onClick = { onClick() },
-        modifier = modifier.padding(8.dp)
+        modifier = modifier
+            .safeDrawingPadding()
+            .padding(horizontal = 8.dp)
+            .padding(bottom = 8.dp)
+//            .padding(8.dp)
     ) {
-        Text("Clear Launch Timestamps")
+        Text("Clear Timestamps")
     }
 }
