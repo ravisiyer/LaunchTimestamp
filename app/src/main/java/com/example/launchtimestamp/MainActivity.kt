@@ -1,7 +1,6 @@
 package com.example.launchtimestamp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -89,30 +88,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier = Modifier) {
     val openAlertDialog = remember { mutableStateOf(false) }
-//    Log.d("My App","MainScreen")
-    // Code works only if button and text are defined in this function itself.
-    // If I call FilledButtonExample() and ShowText(), the button click does not work!
-    // I cannot figure out why given my very, very limited knowledge of Android prog.
-    // So have commented out FilledButtonExample() and ShowText() code.
-    // Update: The verticalScroll modifier to Text creates the problem!
-    // Column layout seems to be the fix.
     Column {
-        Button(onClick = {
-//            Log.d("My App","Button onClick invoked")
+        ClearTimestampsButton(onClick = {
             openAlertDialog.value = !openAlertDialog.value
-        },
-            modifier = modifier
-                .padding(horizontal = 8.dp)
-        ) {
-            Text("Clear Timestamps")
-        }
-        ShowText(msg, modifier)
-//        Text(
-//            text = msg,
-//            modifier = modifier
-//                .padding(horizontal = 8.dp)
-//                .verticalScroll(rememberScrollState())
-//        )
+            },
+            modifier = modifier)
+        ShowText(message = msg, modifier= modifier)
     }
     when {
         openAlertDialog.value -> {
@@ -120,7 +101,6 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = {
                     openAlertDialog.value = false
-//                    Log.d("My App","Confirmation registered") // Add logic here to handle confirmation.
                     clearAllTimestamps()
                 },
                 dialogTitle = "Confirm Clear Timestamps",
@@ -136,50 +116,20 @@ fun ShowText(message: String, modifier: Modifier = Modifier) {
     Text(
         text = message,
         modifier = modifier
-//            .safeDrawingPadding()
             .padding(horizontal = 8.dp)
-//            .padding(8.dp)
             .verticalScroll(rememberScrollState())
     )
 }
 
-//@Composable
-//fun FilledButtonExample(onClick:  () -> Unit, modifier: Modifier = Modifier) {
-////    Log.d("My App","FilledButtonExample start")
-////    val openAlertDialog = remember { mutableStateOf(false) }
-////    Button(
-//    Button(onClick = {
-//        onClick();
-////        Log.d("My App","Button onClick invoked")
-////        openAlertDialog.value = !openAlertDialog.value
-//                     },
-//        modifier = modifier
-////            .safeDrawingPadding()
-//            .padding(horizontal = 8.dp)
-////            .padding(bottom = 8.dp)
-////            .padding(8.dp)
-//            .clickable(enabled = true,
-//                onClick = {onClick();})
-//    ) {
-//        Text("Clear Timestamps")
-//    }
-////    when {
-////        // ...
-////        openAlertDialog.value -> {
-////            AlertDialogExample(
-////                onDismissRequest = { openAlertDialog.value = false },
-////                onConfirmation = {
-////                    openAlertDialog.value = false
-////                    println("Confirmation registered") // Add logic here to handle confirmation.
-////                    onClick();
-////                },
-////                dialogTitle = "Alert dialog example",
-////                dialogText = "This is an example of an alert dialog with buttons.",
-////                icon = Icons.Default.Info
-////            )
-////        }
-////    }
-//}
+@Composable
+fun ClearTimestampsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(onClick = { onClick() },
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+    ) {
+        Text("Clear Timestamps")
+    }
+}
 
 @Composable
 fun AlertDialogExample(
