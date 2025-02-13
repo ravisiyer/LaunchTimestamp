@@ -4,27 +4,42 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -89,11 +104,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//val AppInfo = ""
+
 @Composable
 fun MainScreen(clearAllTimestamps: () -> Unit,
                addTimestamp: () -> Unit,
                msg: String, modifier: Modifier = Modifier) {
     val openAlertDialog = remember { mutableStateOf(false) }
+    val openInfoDialog = remember { mutableStateOf(false) }
     Column {
         Row {
             ClearTimestampsButton(onClick = {
@@ -101,6 +119,10 @@ fun MainScreen(clearAllTimestamps: () -> Unit,
                 },
                 modifier = modifier)
             AddTimestampsButton(onClick = { addTimestamp() },
+                modifier = modifier)
+            InfoButton(onClick = {
+                openInfoDialog.value = !openInfoDialog.value
+            },
                 modifier = modifier)
         }
         ShowText(message = msg, modifier= modifier)
@@ -113,11 +135,28 @@ fun MainScreen(clearAllTimestamps: () -> Unit,
                     openAlertDialog.value = false
                     clearAllTimestamps()
                 },
-                dialogTitle = "Confirm Clear Timestamps",
+                dialogTitle = "Confirm Clear All",
                 dialogText = "Please confirm if you want to clear all timestamps.",
                 icon = Icons.Default.Info
             )
         }
+        openInfoDialog.value -> {
+            InfoDialog(
+                onDismissRequest = {
+                    openInfoDialog.value = false
+                },
+            )
+        }
+//        openInfoDialog.value -> {
+//            InfoDialog(
+//                onConfirmation = {
+//                    openInfoDialog.value = false
+//                },
+//                dialogTitle = "App Info",
+//                dialogText = "Info TBD.",
+//                icon = Icons.Default.Info
+//            )
+//        }
     }
 }
 
@@ -131,13 +170,14 @@ fun ShowText(message: String, modifier: Modifier = Modifier) {
     )
 }
 
+// Repetitive button functions could be refactored to single function
 @Composable
 fun ClearTimestampsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Button(onClick = { onClick() },
         modifier = modifier
             .padding(horizontal = 8.dp)
     ) {
-        Text("Clear Timestamps")
+        Text("Clear All")
     }
 }
 
@@ -147,9 +187,21 @@ fun AddTimestampsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
         modifier = modifier
             .padding(horizontal = 8.dp)
     ) {
-        Text("Add Timestamp")
+        Text("Add")
     }
 }
+
+@Composable
+fun InfoButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(onClick = { onClick() },
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+    ) {
+        Text("Info")
+    }
+}
+
+// Repetitive Dialog functions could be refactored to single function
 @Composable
 fun AlertDialogExample(
     onDismissRequest: () -> Unit,
@@ -190,4 +242,96 @@ fun AlertDialogExample(
             }
         }
     )
+}
+
+//@Composable
+//fun InfoDialog(
+//    onConfirmation: () -> Unit,
+//    dialogTitle: String,
+//    dialogText: String,
+//    icon: ImageVector,
+//) {
+//    AlertDialog(
+//        icon = {
+//            Icon(icon, contentDescription = "Example Icon")
+//        },
+//        title = {
+//            Text(text = dialogTitle)
+//        },
+//        text = {
+//            Text(text = dialogText)
+//        },
+////        text = {
+////            Text(text = dialogText)
+////        },
+//        onDismissRequest = {
+//            onConfirmation()
+//        },
+//        confirmButton = {
+//            TextButton(
+//                onClick = {
+//                    onConfirmation()
+//                }
+//            ) {
+//                Text("Close")
+//            }
+//        },
+//    )
+//}
+
+@Composable
+fun InfoDialog(onDismissRequest: () -> Unit) {
+    Dialog(
+        onDismissRequest = { onDismissRequest() },
+        properties = DialogProperties(
+//            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+        ),
+    ) {
+        Surface(
+            modifier = Modifier
+//                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            Column(
+                modifier = Modifier
+//                    .fillMaxSize(),
+//                verticalArrangement = Arrangement.Center,
+//                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "App Info",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+//                        .size(16.dp)
+                )
+                Text(
+                    text =  "This is a very simple launch/redraw and one-touch-add timestamp recording app" +
+                            " with no text associated with the timestamp.\n\n" +
+                            "It automatically creates a timestamp  when the app is launched.\n\n" +
+                            "Clear All button: Clears all timestamps.\n" +
+                            "Add button: Adds current date & time as a timestamp.\n" +
+                            "Switching between portrait and landscape modes results in a redraw" +
+                            " timestamp being added.\n\n" +
+                            "App author: Ravi S. Iyer",
+//                            "App blog post: https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html\n",
+                    modifier = Modifier
+                        .padding(16.dp)
+//                    textAlign = TextAlign.Center,
+                )
+                SelectionContainer {
+                    Text("App blog post: https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html",
+                        modifier = Modifier
+                            .padding(16.dp)
+                        )
+                }
+                TextButton(onClick = { onDismissRequest() }) {
+                    Text("Dismiss")
+                }
+            }
+        }
+    }
 }
