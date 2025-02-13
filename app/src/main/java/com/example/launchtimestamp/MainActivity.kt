@@ -7,7 +7,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
@@ -41,7 +45,7 @@ class MainActivity : ComponentActivity() {
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "\n\nCurrent Launch/Redraw Timestamp:\n$currentDatetime"
+        var msg = "Current Launch/Redraw Timestamp:\n$currentDatetime"
         msg += "\n\nTimestamp format: yyyy/MM/dd HH:mm:ss"
         msg += "\nFrom within app, to add new (redraw) timestamp, switch between portrait and landscape modes."
         if (setPrevDatetime != null) {
@@ -89,49 +93,48 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier = Modifier) {
-//    val context = LocalContext.current.applicationContext
+    val openAlertDialog = remember { mutableStateOf(false) }
     Log.d("My App",
         "MainScreen")
     // Code works only if button and text are defined in this function itself.
     // If I call FilledButtonExample() and ShowText(), the button click does not work!
     // I cannot figure out why given my very, very limited knowledge of Android prog.
     // So have commented out FilledButtonExample() and ShowText() code.
-    Button(onClick = {
-        Log.d("My App","Button onClick invoked")
-//        openAlertDialog.value = !openAlertDialog.value
-    },
-        modifier = modifier
-//            .safeDrawingPadding()
-            .padding(horizontal = 8.dp)
-//            .padding(bottom = 8.dp)
-//            .padding(8.dp)
-    ) {
-        Text("Clear Timestamps")
+    // Update: The verticalScroll modifier to Text creates the problem!
+    // Column layout seems to be the fix.
+    Column {
+        Button(onClick = {
+            Log.d("My App","Button onClick invoked")
+            openAlertDialog.value = !openAlertDialog.value
+        },
+            modifier = modifier
+                .padding(horizontal = 8.dp)
+        ) {
+            Text("Clear Timestamps")
+        }
+        Text(
+            text = msg,
+            modifier = modifier
+                .padding(horizontal = 8.dp)
+                .verticalScroll(rememberScrollState())
+        )
     }
-//        modifier = modifier
-////            .safeDrawingPadding()
-//            .padding(horizontal = 8.dp)
-////            .padding(bottom = 8.dp)
-////            .padding(8.dp)
-//    ) {
-//        Text("New button")
+//    when {
+//        // ...
+//        openAlertDialog.value -> {
+//            AlertDialogExample(
+//                onDismissRequest = { openAlertDialog.value = false },
+//                onConfirmation = {
+//                    openAlertDialog.value = false
+//                    Log.d("My App","Confirmation registered") // Add logic here to handle confirmation.
+////                    onClick();
+//                },
+//                dialogTitle = "Alert dialog example",
+//                dialogText = "This is an example of an alert dialog with buttons.",
+//                icon = Icons.Default.Info
+//            )
+//        }
 //    }
-    Text(
-        text = msg,
-        modifier = modifier
-//            .safeDrawingPadding()
-            .padding(horizontal = 8.dp)
-//            .padding(8.dp)
-            .verticalScroll(rememberScrollState())
-    )
-//    FilledButtonExample(onClick = { Log.d("My App",
-//        "FilledButtonExample onClick handler invoked") },
-//////    FilledButtonExample(onClick = { clearAllTimestamps() },
-//        modifier = Modifier)
-//    ShowText(
-//        message = msg,
-//        modifier = Modifier)
-
 }
 
 //@Composable
@@ -182,26 +185,6 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
 ////            )
 ////        }
 ////    }
-//}
-
-//@Composable
-//fun ConfirmClear() {
-//    val openAlertDialog = remember { mutableStateOf(false) }
-//    when {
-//        // ...
-//        openAlertDialog.value -> {
-//            AlertDialogExample(
-//                onDismissRequest = { openAlertDialog.value = false },
-//                onConfirmation = {
-//                    openAlertDialog.value = false
-//                    println("Confirmation registered") // Add logic here to handle confirmation.
-//                },
-//                dialogTitle = "Alert dialog example",
-//                dialogText = "This is an example of an alert dialog with buttons.",
-//                icon = Icons.Default.Info
-//            )
-//        }
-//    }
 //}
 
 @Composable
