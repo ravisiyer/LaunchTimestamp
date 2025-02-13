@@ -1,17 +1,12 @@
 package com.example.launchtimestamp
 
-import android.app.Activity.MODE_PRIVATE
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
@@ -29,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
@@ -88,14 +82,14 @@ class MainActivity : ComponentActivity() {
         val myEdit = sh.edit()
         myEdit.putStringSet("savedDatetime", setDatetimeM)
         myEdit.apply()
+        this.recreate()
     }
 }
 
 @Composable
 fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier = Modifier) {
     val openAlertDialog = remember { mutableStateOf(false) }
-    Log.d("My App",
-        "MainScreen")
+//    Log.d("My App","MainScreen")
     // Code works only if button and text are defined in this function itself.
     // If I call FilledButtonExample() and ShowText(), the button click does not work!
     // I cannot figure out why given my very, very limited knowledge of Android prog.
@@ -104,7 +98,7 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
     // Column layout seems to be the fix.
     Column {
         Button(onClick = {
-            Log.d("My App","Button onClick invoked")
+//            Log.d("My App","Button onClick invoked")
             openAlertDialog.value = !openAlertDialog.value
         },
             modifier = modifier
@@ -120,17 +114,16 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
         )
     }
     when {
-        // ...
         openAlertDialog.value -> {
             AlertDialogExample(
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = {
                     openAlertDialog.value = false
-                    Log.d("My App","Confirmation registered") // Add logic here to handle confirmation.
-//                    onClick();
+//                    Log.d("My App","Confirmation registered") // Add logic here to handle confirmation.
+                    clearAllTimestamps()
                 },
-                dialogTitle = "Alert dialog example",
-                dialogText = "This is an example of an alert dialog with buttons.",
+                dialogTitle = "Confirm Clear Timestamps",
+                dialogText = "Please confirm if you want to clear all timestamps.",
                 icon = Icons.Default.Info
             )
         }
