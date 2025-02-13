@@ -119,22 +119,22 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
                 .verticalScroll(rememberScrollState())
         )
     }
-//    when {
-//        // ...
-//        openAlertDialog.value -> {
-//            AlertDialogExample(
-//                onDismissRequest = { openAlertDialog.value = false },
-//                onConfirmation = {
-//                    openAlertDialog.value = false
-//                    Log.d("My App","Confirmation registered") // Add logic here to handle confirmation.
-////                    onClick();
-//                },
-//                dialogTitle = "Alert dialog example",
-//                dialogText = "This is an example of an alert dialog with buttons.",
-//                icon = Icons.Default.Info
-//            )
-//        }
-//    }
+    when {
+        // ...
+        openAlertDialog.value -> {
+            AlertDialogExample(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    openAlertDialog.value = false
+                    Log.d("My App","Confirmation registered") // Add logic here to handle confirmation.
+//                    onClick();
+                },
+                dialogTitle = "Alert dialog example",
+                dialogText = "This is an example of an alert dialog with buttons.",
+                icon = Icons.Default.Info
+            )
+        }
+    }
 }
 
 //@Composable
