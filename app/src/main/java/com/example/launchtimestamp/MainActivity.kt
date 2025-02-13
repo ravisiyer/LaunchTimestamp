@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -40,7 +41,6 @@ class MainActivity : ComponentActivity() {
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
         var msg = "Current Launch/Redraw Timestamp:\n$currentDatetime"
         msg += "\n\nTimestamp format: yyyy/MM/dd HH:mm:ss"
-        msg += "\nFrom within app, to add new (redraw) timestamp, switch between portrait and landscape modes."
         if (setPrevDatetime != null) {
             msg += "\n\nPrevious Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)"
             for(item in setPrevDatetime.withIndex())
@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()) {
                     innerPadding ->
                     MainScreen(clearAllTimestamps = ::clearAllTimestamps,
+                        addTimestamp = ::addTimestamp,
                         msg = msg,
                         modifier = Modifier.padding(innerPadding))
                 }
@@ -83,16 +84,25 @@ class MainActivity : ComponentActivity() {
         myEdit.apply()
         this.recreate()
     }
+    private fun addTimestamp() {
+        this.recreate()
+    }
 }
 
 @Composable
-fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier = Modifier) {
+fun MainScreen(clearAllTimestamps: () -> Unit,
+               addTimestamp: () -> Unit,
+               msg: String, modifier: Modifier = Modifier) {
     val openAlertDialog = remember { mutableStateOf(false) }
     Column {
-        ClearTimestampsButton(onClick = {
-            openAlertDialog.value = !openAlertDialog.value
-            },
-            modifier = modifier)
+        Row {
+            ClearTimestampsButton(onClick = {
+                openAlertDialog.value = !openAlertDialog.value
+                },
+                modifier = modifier)
+            AddTimestampsButton(onClick = { addTimestamp() },
+                modifier = modifier)
+        }
         ShowText(message = msg, modifier= modifier)
     }
     when {
@@ -131,6 +141,15 @@ fun ClearTimestampsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun AddTimestampsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(onClick = { onClick() },
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+    ) {
+        Text("Add Timestamp")
+    }
+}
 @Composable
 fun AlertDialogExample(
     onDismissRequest: () -> Unit,
