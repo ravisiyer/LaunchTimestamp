@@ -106,12 +106,13 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
         ) {
             Text("Clear Timestamps")
         }
-        Text(
-            text = msg,
-            modifier = modifier
-                .padding(horizontal = 8.dp)
-                .verticalScroll(rememberScrollState())
-        )
+        ShowText(msg, modifier)
+//        Text(
+//            text = msg,
+//            modifier = modifier
+//                .padding(horizontal = 8.dp)
+//                .verticalScroll(rememberScrollState())
+//        )
     }
     when {
         openAlertDialog.value -> {
@@ -130,17 +131,17 @@ fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier =
     }
 }
 
-//@Composable
-//fun ShowText(message: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = message,
-//        modifier = modifier
-////            .safeDrawingPadding()
-//            .padding(horizontal = 8.dp)
-////            .padding(8.dp)
-//            .verticalScroll(rememberScrollState())
-//    )
-//}
+@Composable
+fun ShowText(message: String, modifier: Modifier = Modifier) {
+    Text(
+        text = message,
+        modifier = modifier
+//            .safeDrawingPadding()
+            .padding(horizontal = 8.dp)
+//            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
+    )
+}
 
 //@Composable
 //fun FilledButtonExample(onClick:  () -> Unit, modifier: Modifier = Modifier) {
