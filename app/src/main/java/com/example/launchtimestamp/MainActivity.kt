@@ -1,19 +1,31 @@
 package com.example.launchtimestamp
 
+import android.app.Activity.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
@@ -31,9 +43,9 @@ class MainActivity : ComponentActivity() {
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
         var msg = "\n\nCurrent Launch/Redraw Timestamp:\n$currentDatetime"
         msg += "\n\nTimestamp format: yyyy/MM/dd HH:mm:ss"
-        msg += "\nTo add new (redraw) timestamp, switch between portrait and landscape modes."
+        msg += "\nFrom within app, to add new (redraw) timestamp, switch between portrait and landscape modes."
         if (setPrevDatetime != null) {
-            msg += "\n\nPrevious Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)\n"
+            msg += "\n\nPrevious Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)"
             for(item in setPrevDatetime.withIndex())
                 msg += "\n${item.index+1}) ${item.value}"
         }
@@ -55,15 +67,12 @@ class MainActivity : ComponentActivity() {
         myEdit.apply()
         setContent {
             LaunchTimestampTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
+                Scaffold(modifier = Modifier
+                    .safeDrawingPadding()
+                    .fillMaxSize()) {
                     innerPadding ->
-                    FilledButtonExample(onClick = {
-                        clearAllTimestamps()
-                        this.recreate()
-                        },
-                        modifier = Modifier.padding(innerPadding))
-                    ShowText(
-                        message = msg,
+                    MainScreen(clearAllTimestamps = ::clearAllTimestamps,
+                        msg = msg,
                         modifier = Modifier.padding(innerPadding))
                 }
             }
@@ -79,25 +88,160 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ShowText(message: String, modifier: Modifier = Modifier) {
-    Text(
-        text = message,
+fun MainScreen(clearAllTimestamps: () -> Unit, msg: String, modifier: Modifier = Modifier) {
+//    val context = LocalContext.current.applicationContext
+    Log.d("My App",
+        "MainScreen")
+    // Code works only if button and text are defined in this function itself.
+    // If I call FilledButtonExample() and ShowText(), the button click does not work!
+    // I cannot figure out why given my very, very limited knowledge of Android prog.
+    // So have commented out FilledButtonExample() and ShowText() code.
+    Button(onClick = {
+        Log.d("My App","Button onClick invoked")
+//        openAlertDialog.value = !openAlertDialog.value
+    },
         modifier = modifier
-            .safeDrawingPadding()
-            .padding(8.dp)
-            .verticalScroll(rememberScrollState())
-    )
-}
-
-@Composable
-fun FilledButtonExample(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Button(onClick = { onClick() },
-        modifier = modifier
-            .safeDrawingPadding()
+//            .safeDrawingPadding()
             .padding(horizontal = 8.dp)
-            .padding(bottom = 8.dp)
+//            .padding(bottom = 8.dp)
 //            .padding(8.dp)
     ) {
         Text("Clear Timestamps")
     }
+//        modifier = modifier
+////            .safeDrawingPadding()
+//            .padding(horizontal = 8.dp)
+////            .padding(bottom = 8.dp)
+////            .padding(8.dp)
+//    ) {
+//        Text("New button")
+//    }
+    Text(
+        text = msg,
+        modifier = modifier
+//            .safeDrawingPadding()
+            .padding(horizontal = 8.dp)
+//            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
+    )
+//    FilledButtonExample(onClick = { Log.d("My App",
+//        "FilledButtonExample onClick handler invoked") },
+//////    FilledButtonExample(onClick = { clearAllTimestamps() },
+//        modifier = Modifier)
+//    ShowText(
+//        message = msg,
+//        modifier = Modifier)
+
+}
+
+//@Composable
+//fun ShowText(message: String, modifier: Modifier = Modifier) {
+//    Text(
+//        text = message,
+//        modifier = modifier
+////            .safeDrawingPadding()
+//            .padding(horizontal = 8.dp)
+////            .padding(8.dp)
+//            .verticalScroll(rememberScrollState())
+//    )
+//}
+
+//@Composable
+//fun FilledButtonExample(onClick:  () -> Unit, modifier: Modifier = Modifier) {
+////    Log.d("My App","FilledButtonExample start")
+////    val openAlertDialog = remember { mutableStateOf(false) }
+////    Button(
+//    Button(onClick = {
+//        onClick();
+////        Log.d("My App","Button onClick invoked")
+////        openAlertDialog.value = !openAlertDialog.value
+//                     },
+//        modifier = modifier
+////            .safeDrawingPadding()
+//            .padding(horizontal = 8.dp)
+////            .padding(bottom = 8.dp)
+////            .padding(8.dp)
+//            .clickable(enabled = true,
+//                onClick = {onClick();})
+//    ) {
+//        Text("Clear Timestamps")
+//    }
+////    when {
+////        // ...
+////        openAlertDialog.value -> {
+////            AlertDialogExample(
+////                onDismissRequest = { openAlertDialog.value = false },
+////                onConfirmation = {
+////                    openAlertDialog.value = false
+////                    println("Confirmation registered") // Add logic here to handle confirmation.
+////                    onClick();
+////                },
+////                dialogTitle = "Alert dialog example",
+////                dialogText = "This is an example of an alert dialog with buttons.",
+////                icon = Icons.Default.Info
+////            )
+////        }
+////    }
+//}
+
+//@Composable
+//fun ConfirmClear() {
+//    val openAlertDialog = remember { mutableStateOf(false) }
+//    when {
+//        // ...
+//        openAlertDialog.value -> {
+//            AlertDialogExample(
+//                onDismissRequest = { openAlertDialog.value = false },
+//                onConfirmation = {
+//                    openAlertDialog.value = false
+//                    println("Confirmation registered") // Add logic here to handle confirmation.
+//                },
+//                dialogTitle = "Alert dialog example",
+//                dialogText = "This is an example of an alert dialog with buttons.",
+//                icon = Icons.Default.Info
+//            )
+//        }
+//    }
+//}
+
+@Composable
+fun AlertDialogExample(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = "Example Icon")
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
 }
