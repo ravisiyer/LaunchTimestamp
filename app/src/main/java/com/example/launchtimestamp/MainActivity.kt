@@ -5,13 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -20,7 +18,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,10 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -104,8 +98,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//val AppInfo = ""
-
 @Composable
 fun MainScreen(clearAllTimestamps: () -> Unit,
                addTimestamp: () -> Unit,
@@ -113,7 +105,9 @@ fun MainScreen(clearAllTimestamps: () -> Unit,
     val openAlertDialog = remember { mutableStateOf(false) }
     val openInfoDialog = remember { mutableStateOf(false) }
     Column {
-        Row {
+        Row (modifier
+            .padding(vertical = 8.dp)
+        ) {
             ClearTimestampsButton(onClick = {
                 openAlertDialog.value = !openAlertDialog.value
                 },
@@ -147,16 +141,6 @@ fun MainScreen(clearAllTimestamps: () -> Unit,
                 },
             )
         }
-//        openInfoDialog.value -> {
-//            InfoDialog(
-//                onConfirmation = {
-//                    openInfoDialog.value = false
-//                },
-//                dialogTitle = "App Info",
-//                dialogText = "Info TBD.",
-//                icon = Icons.Default.Info
-//            )
-//        }
     }
 }
 
@@ -201,7 +185,6 @@ fun InfoButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
-// Repetitive Dialog functions could be refactored to single function
 @Composable
 fun AlertDialogExample(
     onDismissRequest: () -> Unit,
@@ -244,41 +227,6 @@ fun AlertDialogExample(
     )
 }
 
-//@Composable
-//fun InfoDialog(
-//    onConfirmation: () -> Unit,
-//    dialogTitle: String,
-//    dialogText: String,
-//    icon: ImageVector,
-//) {
-//    AlertDialog(
-//        icon = {
-//            Icon(icon, contentDescription = "Example Icon")
-//        },
-//        title = {
-//            Text(text = dialogTitle)
-//        },
-//        text = {
-//            Text(text = dialogText)
-//        },
-////        text = {
-////            Text(text = dialogText)
-////        },
-//        onDismissRequest = {
-//            onConfirmation()
-//        },
-//        confirmButton = {
-//            TextButton(
-//                onClick = {
-//                    onConfirmation()
-//                }
-//            ) {
-//                Text("Close")
-//            }
-//        },
-//    )
-//}
-
 @Composable
 fun InfoDialog(onDismissRequest: () -> Unit) {
     Dialog(
@@ -291,10 +239,11 @@ fun InfoDialog(onDismissRequest: () -> Unit) {
         Surface(
             modifier = Modifier
 //                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+//                .background(MaterialTheme.colorScheme.surfaceVariant),
         ) {
             Column(
                 modifier = Modifier
+                    .background(color = Color(0xffcbd4d1))
 //                    .fillMaxSize(),
 //                verticalArrangement = Arrangement.Center,
 //                horizontalAlignment = Alignment.CenterHorizontally,
@@ -306,30 +255,38 @@ fun InfoDialog(onDismissRequest: () -> Unit) {
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
-//                        .size(16.dp)
                 )
                 Text(
                     text =  "This is a very simple launch/redraw and one-touch-add timestamp recording app" +
                             " with no text associated with the timestamp.\n\n" +
-                            "It automatically creates a timestamp  when the app is launched.\n\n" +
+                            "It automatically creates a timestamp when the app is launched.\n\n" +
                             "Clear All button: Clears all timestamps.\n" +
                             "Add button: Adds current date & time as a timestamp.\n" +
                             "Switching between portrait and landscape modes results in a redraw" +
                             " timestamp being added.\n\n" +
-                            "App author: Ravi S. Iyer",
-//                            "App blog post: https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html\n",
+                            "App author: Ravi S. Iyer\n" +
+                            "App Date: 14 Feb. 2025\n\n" +
+                            "App blog post: (press to select)",
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
+//                        .padding(16.dp)
 //                    textAlign = TextAlign.Center,
                 )
                 SelectionContainer {
-                    Text("App blog post: https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html",
+//                    Text("App blog post: (press to select)\n" +
+                    Text("https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html",
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp)
+//                            .padding(top = 16.dp)
+//                            .padding(16.dp)
                         )
                 }
-                TextButton(onClick = { onDismissRequest() }) {
-                    Text("Dismiss")
+                TextButton(onClick = { onDismissRequest() },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Dismiss",
+                    )
                 }
             }
         }
