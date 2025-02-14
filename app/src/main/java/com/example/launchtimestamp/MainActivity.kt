@@ -8,8 +8,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -29,7 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -256,37 +262,75 @@ fun InfoDialog(onDismissRequest: () -> Unit) {
                         .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-                Text(
-                    text =  "This is a very simple launch/redraw and one-touch-add timestamp recording app" +
-                            " with no text associated with the timestamp.\n\n" +
-                            "It automatically creates a timestamp when the app is launched.\n\n" +
-                            "Clear All button: Clears all timestamps.\n" +
-                            "Add button: Adds current date & time as a timestamp.\n" +
-                            "Switching between portrait and landscape modes results in a redraw" +
-                            " timestamp being added.\n\n" +
-                            "App author: Ravi S. Iyer\n" +
-                            "App Date: 14 Feb. 2025\n\n" +
-                            "App blog post: (press to select)",
+                Column (
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-//                        .padding(16.dp)
-//                    textAlign = TextAlign.Center,
-                )
-                SelectionContainer {
-//                    Text("App blog post: (press to select)\n" +
-                    Text("https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html",
+                        .verticalScroll(rememberScrollState())
+                ){
+                    Text(
+                        text =  "This is a very simple launch/redraw and one-touch-add timestamp recording app" +
+                                " with no text associated with the timestamp.\n\n" +
+                                "It automatically creates a timestamp when the app is launched.\n\n" +
+                                "Clear All button: Clears all timestamps.\n" +
+                                "Add button: Adds current date & time as a timestamp.\n" +
+                                "Switching between portrait and landscape modes results in a redraw" +
+                                " timestamp being added.\n\n" +
+                                "App author: Ravi S. Iyer\n" +
+                                "App date: 14 Feb. 2025",
+//                                "App blog post:",
+//                                "App blog post: (press to select)",
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
-//                            .padding(top = 16.dp)
-//                            .padding(16.dp)
-                        )
-                }
-                TextButton(onClick = { onDismissRequest() },
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Text("Dismiss",
+    //                        .padding(16.dp)
+    //                    textAlign = TextAlign.Center,
                     )
+                    val blogPostUrl =
+                        "https://raviswdev.blogspot.com/2025/02/very-simple-one-touch-timestamp-on.html"
+                    Row (
+//                        modifier = Modifier
+//                            .height(48.dp)
+                    ) {
+                    // Retrieve a ClipboardManager object
+                    val clipboardManager = LocalClipboardManager.current
+                        Text(
+                            text =  "App blog post:",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+//                                .padding(horizontal = 16.dp)
+                                .height(48.dp)
+                                .wrapContentHeight(align = Alignment.CenterVertically),
+                            //                        .padding(16.dp)
+                            //                    textAlign = TextAlign.Center,
+                        )
+//                    Button(
+                    TextButton(
+                        onClick = {
+                            // Copy "Hello, clipboard" to the clipboard
+                            clipboardManager.setText(AnnotatedString(blogPostUrl))
+                        },
+                        modifier = Modifier
+//                            .padding(horizontal = 16.dp)
+//                            .size(height = 10.dp)
+                    ) {
+                        Text("Tap to copy link")
+                    }
+                    }
+                    SelectionContainer {
+    //                    Text("App blog post: (press to select)\n" +
+                        Text(blogPostUrl,
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+    //                            .padding(top = 16.dp)
+    //                            .padding(16.dp)
+                            )
+                    }
+                    TextButton(onClick = { onDismissRequest() },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Text("Dismiss",
+                        )
+                    }
                 }
             }
         }
