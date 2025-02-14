@@ -290,7 +290,7 @@ fun InfoDialog(onDismissRequest: () -> Unit) {
 //                            .height(48.dp)
                     ) {
                     // Retrieve a ClipboardManager object
-                    val clipboardManager = LocalClipboardManager.current
+                        val clipboardManager = LocalClipboardManager.current
                         Text(
                             text =  "App blog post:",
                             textAlign = TextAlign.Center,
