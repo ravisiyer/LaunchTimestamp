@@ -43,6 +43,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.floor
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +51,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 100
         val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        val currentDatetime = sdf.format(Date())
+//        val currentDatetime = sdf.format(Date())
+        val nowInMillis: Long = System.currentTimeMillis()
+        val currentDatetime = sdf.format(Date(nowInMillis))
+
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        val onlyLastTimestampInMillis = sh.getLong("OnlyLastTimestampInMillis", 0)
+        if (onlyLastTimestampInMillis > 0) {
+            val durationInMillis: Long = nowInMillis - onlyLastTimestampInMillis
+            println("duration is: " + durationInMillis)
+            val durationSeconds = durationInMillis/1000
+            val durationMinutes = floor((durationSeconds / 60).toDouble()).toInt();
+            val durationRemainingSeconds = (durationSeconds - (durationMinutes * 60)).toInt();
+            val timeDurationFromPrevTSText = durationMinutes.toString() + " minute(s)" +
+                    " and " + durationRemainingSeconds.toString() + " second(s)"
+            println("Time duration from previous timestamp: $timeDurationFromPrevTSText")
+        }
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
         var msg = "Current Launch/Redraw Timestamp:\n$currentDatetime"
@@ -75,6 +90,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val myEdit = sh.edit()
+        myEdit.putLong("OnlyLastTimestampInMillis", nowInMillis);
         myEdit.putStringSet("savedDatetime", setDatetimeM)
         myEdit.apply()
         setContent {
