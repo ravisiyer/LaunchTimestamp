@@ -44,6 +44,7 @@ import com.example.launchtimestamp.ui.theme.LaunchTimestampTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.floor
+import kotlin.math.round
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,22 +58,30 @@ class MainActivity : ComponentActivity() {
 
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val onlyLastTimestampInMillis = sh.getLong("OnlyLastTimestampInMillis", 0)
+        var timeDurationFromPrevTSText = ""
+        var durationInMillis: Long = 0;
         if (onlyLastTimestampInMillis > 0) {
-            val durationInMillis: Long = nowInMillis - onlyLastTimestampInMillis
-            println("duration is: " + durationInMillis)
-            val durationSeconds = durationInMillis/1000
+            durationInMillis = nowInMillis - onlyLastTimestampInMillis
+//            println("duration is: " + durationInMillis)
+            // Use toDouble() to force division to not truncate
+            val durationSeconds = round((durationInMillis.toDouble()/1000));
             val durationMinutes = floor((durationSeconds / 60).toDouble()).toInt();
             val durationRemainingSeconds = (durationSeconds - (durationMinutes * 60)).toInt();
-            val timeDurationFromPrevTSText = durationMinutes.toString() + " minute(s)" +
-                    " and " + durationRemainingSeconds.toString() + " second(s)"
-            println("Time duration from previous timestamp: $timeDurationFromPrevTSText")
+            timeDurationFromPrevTSText = durationMinutes.toString() + " minute(s)" +
+                    " and " + durationRemainingSeconds.toString() + " second(s) [Rounded]"
+//            println("Time duration from previous timestamp: $timeDurationFromPrevTSText")
         }
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
-        var msg = "Current Launch/Redraw Timestamp:\n$currentDatetime"
-        msg += "\n\nTimestamp format: yyyy/MM/dd HH:mm:ss"
+        var msg = "Current launch/redraw timestamp:\n$currentDatetime\n"
+        msg += "Duration from previous timestamp:\n"
+        if (timeDurationFromPrevTSText != "" ) {
+            msg += "$timeDurationFromPrevTSText\n"
+            msg += "[$durationInMillis milliseconds]\n"
+        }
+        msg += "\nTimestamp format: yyyy/MM/dd HH:mm:ss"
         if (setPrevDatetime != null) {
-            msg += "\n\nPrevious Timestamps (Max entries: $MAX_TIMESTAMP_ENTRIES)"
+            msg += "\n\nPrevious timestamps (max entries: $MAX_TIMESTAMP_ENTRIES)"
             for(item in setPrevDatetime.withIndex())
                 msg += "\n${item.index+1}) ${item.value}"
         }
@@ -283,7 +292,7 @@ fun InfoDialog(onDismissRequest: () -> Unit) {
                         .verticalScroll(rememberScrollState())
                 ){
                     Text(
-                        text =  "This is a very simple launch/redraw and one-touch-add timestamp recording app" +
+                        text =  "This is a very simple launch/redraw and one-touch-add timestamp recorder app" +
                                 " with no text associated with the timestamp.\n\n" +
                                 "It automatically creates a timestamp when the app is launched.\n\n" +
                                 "Clear All button: Clears all timestamps.\n" +
@@ -291,7 +300,7 @@ fun InfoDialog(onDismissRequest: () -> Unit) {
                                 "Switching between portrait and landscape modes results in a redraw" +
                                 " timestamp being added.\n\n" +
                                 "App author: Ravi S. Iyer\n" +
-                                "App date: 14 Feb. 2025",
+                                "App date: 25 Mar. 2025",
 //                                "App blog post:",
 //                                "App blog post: (press to select)",
                         modifier = Modifier
