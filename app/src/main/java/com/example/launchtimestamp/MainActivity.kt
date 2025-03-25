@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val MAX_TIMESTAMP_ENTRIES = 100
         val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-//        val currentDatetime = sdf.format(Date())
         val nowInMillis: Long = System.currentTimeMillis()
         val currentDatetime = sdf.format(Date(nowInMillis))
 
@@ -62,14 +61,12 @@ class MainActivity : ComponentActivity() {
         var durationInMillis: Long = 0;
         if (onlyLastTimestampInMillis > 0) {
             durationInMillis = nowInMillis - onlyLastTimestampInMillis
-//            println("duration is: " + durationInMillis)
             // Use toDouble() to force division to not truncate
             val durationSeconds = round((durationInMillis.toDouble()/1000));
             val durationMinutes = floor((durationSeconds / 60).toDouble()).toInt();
             val durationRemainingSeconds = (durationSeconds - (durationMinutes * 60)).toInt();
             timeDurationFromPrevTSText = durationMinutes.toString() + " minute(s)" +
                     " and " + durationRemainingSeconds.toString() + " second(s) [Rounded]"
-//            println("Time duration from previous timestamp: $timeDurationFromPrevTSText")
         }
         val setPrevDatetimeUnsorted =  sh.getStringSet("savedDatetime", linkedSetOf<String>())
         val setPrevDatetime = setPrevDatetimeUnsorted?.sortedDescending()
@@ -120,6 +117,7 @@ class MainActivity : ComponentActivity() {
         val sh = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         var setDatetimeM = LinkedHashSet<String>()
         val myEdit = sh.edit()
+        myEdit.putLong("OnlyLastTimestampInMillis", 0);
         myEdit.putStringSet("savedDatetime", setDatetimeM)
         myEdit.apply()
         this.recreate()
